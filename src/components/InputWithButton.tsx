@@ -1,22 +1,38 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 
-const InputWithButton = ({ ...props }) => {
-  const [value, setValue] = useState('')
+interface InputWithButtonProps {
+  placeholder?: string
+  handleChange: (content: string) => void
+  handleClick: () => void
+}
+
+const InputWithButton: React.FC<InputWithButtonProps> = ({ ...props }) => {
+  const { handleChange, handleClick, placeholder } = props
+  const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="flex space-x-2">
+    <form className="flex space-x-2" onSubmit={(e) => e.preventDefault()}>
       <Input
+        ref={inputRef}
         type="text"
-        placeholder={props.placeholder}
-        onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
+        onChange={(e) => handleChange(e.target.value)}
       />
-      <Button type="submit" onClick={() => props.handleClick()}>
+      <Button
+        type="submit"
+        onClick={() => {
+          handleClick()
+          if (inputRef.current) {
+            inputRef.current.value = ''
+          }
+        }}
+      >
         추가
       </Button>
-    </div>
+    </form>
   )
 }
 
