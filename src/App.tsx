@@ -1,7 +1,21 @@
-import { useReducer, useState } from 'react'
+import { useState } from 'react'
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { useTodoStore } from '@/stores/todoStore'
 
 import './App.css'
 import InputWithButton from './components/InputWithButton'
+import { Button } from './components/ui/button'
 import {
   Table,
   TableBody,
@@ -13,54 +27,48 @@ import {
 } from './components/ui/table'
 import { getTime } from './utils/getTime'
 
-interface Todo {
-  genDate: string
-  genTime: string
-  status: string
-  content: string
-  deadTime: string
-}
-
-const initialState: Todo[] = []
-
-function reducer(state: Todo[], action: { type: string; todo: Todo }) {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return [...state, action.todo]
-    case 'RESET_TODO':
-      return []
-    default:
-      throw new Error()
-  }
-}
-
 function App() {
-  const [todos, dispatch] = useReducer(reducer, initialState)
+  const { todos, addTodo, resetTodos } = useTodoStore()
   const [content, setContent] = useState('')
-
-  const handleClick = () => {
-    const newTodo = {
-      genDate: getTime().slice(0, 11),
-      genTime: getTime().slice(12, 23),
-      status: '대기중',
-      content: content,
-      deadTime: 'N/A',
-    }
-    dispatch({ type: 'ADD_TODO', todo: newTodo })
-  }
-
-  const handleChange = (content: string) => {
-    setContent(content)
-  }
 
   return (
     <div className="flex flex-col items-center justify-center space-y-10">
       <div className="flex w-full max-w-sm items-center justify-center space-x-2">
         <InputWithButton
           placeholder="할 일을 입력하세요!"
-          handleChange={handleChange}
-          handleClick={handleClick}
+          handleChange={(t: string) => setContent(t)}
+          handleClick={() => {
+            const newTodo = {
+              genDate: getTime().slice(0, 10),
+              genTime: getTime().slice(12, 24),
+              status: '대기중',
+              content: content,
+              deadTime: 'N/A',
+            }
+            addTodo(newTodo)
+            setContent('')
+          }}
         />
+
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <Button variant="destructive">초기화</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                업무일정을 초기화 하시겠습니까?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                이 작업은 되돌릴 수 없습니다.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>취소</AlertDialogCancel>
+              <AlertDialogAction onClick={resetTodos}>초기화</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <div>
         <Table>
@@ -75,8 +83,8 @@ function App() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {todos.map((todo, index) => (
-              <TableRow key={index}>
+            {todos.map((todo) => (
+              <TableRow key={todo.id}>
                 <TableCell className="font-medium">{todo.genDate}</TableCell>
                 <TableCell className="font-medium">{todo.genTime}</TableCell>
                 <TableCell>{todo.status}</TableCell>

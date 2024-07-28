@@ -24,8 +24,9 @@ const InputWithButton: React.FC<InputWithButtonProps> = ({ ...props }) => {
       <Button
         type="submit"
         onClick={() => {
-          handleClick()
           if (inputRef.current) {
+            if (inputRef.current.value === '') return
+            handleClick()
             inputRef.current.value = ''
           }
         }}
