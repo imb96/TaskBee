@@ -8,7 +8,7 @@ import { Todo } from '@/types/todo'
 
 interface TodoItemProps {
   todo: Todo
-  onUpdate: (id: string, updatedTodo: Partial<Todo>) => void
+  onUpdate: (id: string, updatedTodo: Partial<Omit<Todo, 'id'>>) => void
   onDelete: (id: string) => void
 }
 

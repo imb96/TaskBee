@@ -7,7 +7,7 @@ import type { Todo } from '@/types/todo'
 type TodoStore = {
   todos: Todo[]
   addTodo: (todo: Omit<Todo, 'id'>) => void
-  updateTodo: (id: string, updatedTodo: Todo) => void
+  updateTodo: (id: string, updatedTodo: Partial<Omit<Todo, 'id'>>) => void
   deleteTodo: (id: string) => void
   resetTodos: () => void
 }
