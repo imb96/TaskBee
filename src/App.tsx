@@ -15,12 +15,12 @@ import { useTodoStore } from '@/stores/todoStore'
 
 import './App.css'
 import InputWithButton from './components/InputWithButton'
+import TodoItem from './components/TodoItem'
 import { Button } from './components/ui/button'
 import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -28,7 +28,7 @@ import {
 import { getTime } from './utils/getTime'
 
 function App() {
-  const { todos, addTodo, resetTodos } = useTodoStore()
+  const { todos, addTodo, resetTodos, updateTodo, deleteTodo } = useTodoStore()
   const [content, setContent] = useState('')
 
   return (
@@ -84,13 +84,12 @@ function App() {
           </TableHeader>
           <TableBody>
             {todos.map((todo) => (
-              <TableRow key={todo.id}>
-                <TableCell className="font-medium">{todo.genDate}</TableCell>
-                <TableCell className="font-medium">{todo.genTime}</TableCell>
-                <TableCell>{todo.status}</TableCell>
-                <TableCell>{todo.content}</TableCell>
-                <TableCell className="text-right">{todo.deadTime}</TableCell>
-              </TableRow>
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onUpdate={updateTodo}
+                onDelete={deleteTodo}
+              />
             ))}
           </TableBody>
         </Table>
