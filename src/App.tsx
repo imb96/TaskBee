@@ -25,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from './components/ui/table'
-import { getTime } from './utils/getTime'
+import { getFormattedDate } from './utils/getFormattedDate.ts'
 
 function App() {
   const { todos, addTodo, resetTodos, updateTodo, deleteTodo } = useTodoStore()
@@ -39,8 +39,8 @@ function App() {
           handleChange={(t: string) => setContent(t)}
           handleClick={() => {
             const newTodo = {
-              genDate: getTime().slice(0, 10),
-              genTime: getTime().slice(12, 24),
+              genDate: getFormattedDate().formatDate,
+              genTime: getFormattedDate().formatTime,
               status: '대기중',
               content: content,
               deadTime: 'N/A',
